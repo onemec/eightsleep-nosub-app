@@ -1,11 +1,11 @@
 "use client";
-import React, {useEffect, useState} from "react";
-import {type Control, Controller, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {z} from "zod";
-import {apiR} from "~/trpc/react";
-import TimezoneSelect, {allTimezones} from "react-timezone-select";
-import {Button} from "./ui/button";
+import React, { useEffect, useState } from "react";
+import { type Control, Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { apiR } from "~/trpc/react";
+import TimezoneSelect, { allTimezones } from "react-timezone-select";
+import { Button } from "./ui/button";
 
 const temperatureProfileSchema = z.object({
   bedTime: z.string().regex(/^\d{2}:\d{2}$/, "Must be in HH:MM format"),
@@ -13,11 +13,7 @@ const temperatureProfileSchema = z.object({
   initialSleepLevel: z.number().min(-10).max(10),
   midStageSleepLevel: z.number().min(-10).max(10),
   finalSleepLevel: z.number().min(-10).max(10),
-  timezone: z.object({
-    value: z.string(),
-    altName: z.string().optional(),
-    abbrev: z.string().optional(),
-  }),
+  timezone: z.string(),
 });
 
 type TemperatureProfileForm = z.infer<typeof temperatureProfileSchema>;
@@ -45,7 +41,7 @@ export const TemperatureProfileForm: React.FC = () => {
       initialSleepLevel: 0,
       midStageSleepLevel: 0,
       finalSleepLevel: 0,
-      timezone: { value: "America/New_York" },
+      timezone: "America/New_York",
     },
   });
 
@@ -69,7 +65,7 @@ export const TemperatureProfileForm: React.FC = () => {
       setValue("initialSleepLevel", profile.initialSleepLevel / 10);
       setValue("midStageSleepLevel", profile.midStageSleepLevel / 10);
       setValue("finalSleepLevel", profile.finalSleepLevel / 10);
-      setValue("timezone", { value: profile.timezoneTZ });
+      setValue("timezone", profile.timezoneTZ);
       setIsExistingProfile(true);
       setIsLoading(false);
     } else if (getUserTemperatureProfileQuery.isError) {
@@ -157,7 +153,7 @@ export const TemperatureProfileForm: React.FC = () => {
       initialSleepLevel: Math.round(data.initialSleepLevel * 10),
       midStageSleepLevel: Math.round(data.midStageSleepLevel * 10),
       finalSleepLevel: Math.round(data.finalSleepLevel * 10),
-      timezoneTZ: data.timezone.value,
+      timezoneTZ: data.timezone,
     };
 
     console.log("Data being sent to server:", mutationData);
@@ -236,7 +232,7 @@ export const TemperatureProfileForm: React.FC = () => {
             render={({ field }) => (
               <TimezoneSelect
                 value={field.value}
-                onChange={field.onChange}
+                onChange={(val) => field.onChange(val.value)}
                 timezones={{
                   ...allTimezones,
                   "America/New_York": "America/New York",

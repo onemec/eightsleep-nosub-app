@@ -1,10 +1,11 @@
 // eight.ts
-import {z} from "zod";
-import {DeviceDataSchema, DeviceListSchema, type Token} from "./types";
-import {APP_API_URL, CLIENT_API_URL, DEFAULT_API_HEADERS} from "./constants";
+import { z } from "zod";
+import { DeviceDataSchema, DeviceListSchema, type Token } from "./types";
+import { APP_API_URL, CLIENT_API_URL, DEFAULT_API_HEADERS } from "./constants";
 
 export async function fetchWithAuth<
-  T extends z.ZodType<unknown, z.ZodTypeDef, unknown>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  T extends z.ZodType<unknown, any, any>,
 >(
   url: string,
   token: Token,
@@ -71,7 +72,7 @@ export async function setSmartHeatingLevel(
   const currentData = await fetchWithAuth(
     url,
     token,
-    z.object({ smart: z.record(z.number()) }),
+    z.object({ smart: z.record(z.string(), z.number()) }),
   );
   const smartLevels = currentData.smart;
   smartLevels[sleepStage] = level;
