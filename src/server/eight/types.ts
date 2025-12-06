@@ -1,5 +1,5 @@
 // types.ts
-import {z} from "zod";
+import { z } from "zod";
 
 export interface Token {
   eightAccessToken: string;
@@ -39,7 +39,15 @@ export const UserProfileSchema = z.object({
       emailVerified: z.boolean().optional(),
       sharingMetricsTo: z.array(z.unknown()).optional(),
       sharingMetricsFrom: z.array(z.unknown()).optional(),
-      notifications: z.record(z.boolean()).optional(),
+      notifications: z
+        .record(
+          z.string(),
+          z.union([
+            z.boolean(),
+            z.string().transform((val) => val === "true"),
+          ]),
+        )
+        .optional(),
       createdAt: z.string().optional(),
       experimentalFeatures: z.boolean().optional(),
       autopilotEnabled: z.boolean().optional(),
