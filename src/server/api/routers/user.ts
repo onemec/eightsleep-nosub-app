@@ -142,7 +142,7 @@ export const userRouter = createTRPCRouter({
         });
         const threeMonthsInSeconds = 90 * 24 * 60 * 60; // 90 days
 
-        cookies().set("8slpAutht", token, {
+        (await cookies()).set("8slpAutht", token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
@@ -172,7 +172,7 @@ export const userRouter = createTRPCRouter({
     }),
   logout: publicProcedure.mutation(async () => {
     try {
-      cookies().set("8slpAutht", "", {
+      (await cookies()).set("8slpAutht", "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
