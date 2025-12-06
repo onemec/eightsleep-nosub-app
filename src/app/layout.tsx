@@ -22,19 +22,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-      <html
-        lang="en"
-        className={cn(
-          "dark",
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
-      >
-        <body>
-          <TRPCReactProvider>
-            {children}
-          </TRPCReactProvider>
-        </body>
-      </html>
+    <html
+      lang="en"
+      className={cn(
+        "dark",
+        "bg-background min-h-screen font-sans antialiased",
+        fontSans.variable,
+      )}
+    >
+      <body>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
+      </body>
+    </html>
   );
 }

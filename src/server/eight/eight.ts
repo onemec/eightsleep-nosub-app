@@ -1,14 +1,15 @@
 // eight.ts
-import { z } from 'zod';
-import { DeviceDataSchema, DeviceListSchema, type Token } from './types';
-import { CLIENT_API_URL, APP_API_URL, DEFAULT_API_HEADERS } from './constants';
+import {z} from "zod";
+import {DeviceDataSchema, DeviceListSchema, type Token} from "./types";
+import {APP_API_URL, CLIENT_API_URL, DEFAULT_API_HEADERS} from "./constants";
 
-
-export async function fetchWithAuth<T extends z.ZodType<unknown, z.ZodTypeDef, unknown>>(
-  url: string, 
-  token: Token, 
-  schema: T, 
-  options: RequestInit = {}
+export async function fetchWithAuth<
+  T extends z.ZodType<unknown, z.ZodTypeDef, unknown>,
+>(
+  url: string,
+  token: Token,
+  schema: T,
+  options: RequestInit = {},
 ): Promise<z.infer<T>> {
   const response = await fetch(url, {
     ...options,
@@ -31,15 +32,21 @@ export async function fetchDeviceList(token: Token): Promise<string[]> {
   return data.user.devices;
 }
 
-
-
-export async function getDeviceData(token: Token, deviceId: string): Promise<z.infer<typeof DeviceDataSchema>['result']> {
+export async function getDeviceData(
+  token: Token,
+  deviceId: string,
+): Promise<z.infer<typeof DeviceDataSchema>["result"]> {
   const url = `${CLIENT_API_URL}/devices/${deviceId}`;
   const data = await fetchWithAuth(url, token, DeviceDataSchema);
   return data.result;
 }
 
-export async function setHeatingLevel(token: Token, userId: string, level: number, duration = 0): Promise<void> {
+export async function setHeatingLevel(
+  token: Token,
+  userId: string,
+  level: number,
+  duration = 0,
+): Promise<void> {
   const url = `${APP_API_URL}v1/users/${userId}/temperature`;
   const data = {
     timeBased: { level, durationSeconds: duration },
@@ -47,22 +54,31 @@ export async function setHeatingLevel(token: Token, userId: string, level: numbe
   };
 
   await fetchWithAuth(url, token, z.object({}), {
-    method: 'PUT',
+    method: "PUT",
     body: JSON.stringify(data),
   });
 }
 
-export async function setSmartHeatingLevel(token: Token, userId: string, level: number, sleepStage: string): Promise<void> {
+export async function setSmartHeatingLevel(
+  token: Token,
+  userId: string,
+  level: number,
+  sleepStage: string,
+): Promise<void> {
   const url = `${APP_API_URL}v1/users/${userId}/temperature`;
 
   // First, get current smart heating levels
-  const currentData = await fetchWithAuth(url, token, z.object({ smart: z.record(z.number()) }));
+  const currentData = await fetchWithAuth(
+    url,
+    token,
+    z.object({ smart: z.record(z.number()) }),
+  );
   const smartLevels = currentData.smart;
   smartLevels[sleepStage] = level;
 
   // Now, update with new level
   await fetchWithAuth(url, token, z.object({}), {
-    method: 'PUT',
+    method: "PUT",
     body: JSON.stringify({ smart: smartLevels }),
   });
 }
@@ -72,7 +88,7 @@ export async function turnOnSide(token: Token, userId: string): Promise<void> {
   const data = { currentState: { type: "smart" } };
 
   await fetchWithAuth(url, token, z.object({}), {
-    method: 'PUT',
+    method: "PUT",
     body: JSON.stringify(data),
   });
 }
@@ -82,7 +98,7 @@ export async function turnOffSide(token: Token, userId: string): Promise<void> {
   const data = { currentState: { type: "off" } };
 
   await fetchWithAuth(url, token, z.object({}), {
-    method: 'PUT',
+    method: "PUT",
     body: JSON.stringify(data),
   });
 }

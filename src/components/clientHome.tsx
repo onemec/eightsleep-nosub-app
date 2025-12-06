@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { EightLoginDialog } from "~/components/eightLogin";
-import { TemperatureProfileForm } from "~/components/temperatureProfileForm";
-import { LogoutButton } from "~/components/logout";
+import {useState} from "react";
+import {EightLoginDialog} from "~/components/eightLogin";
+import {TemperatureProfileForm} from "~/components/temperatureProfileForm";
+import {LogoutButton} from "~/components/logout";
 
 export default function ClientHome({
   initialLoginState,
