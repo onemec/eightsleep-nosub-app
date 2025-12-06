@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useForm, Controller, type Control } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { apiR } from "~/trpc/react";
-import TimezoneSelect, { allTimezones } from "react-timezone-select";
-import { Button } from "./ui/button";
+import React, {useEffect, useState} from "react";
+import {type Control, Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from "zod";
+import {apiR} from "~/trpc/react";
+import TimezoneSelect, {allTimezones} from "react-timezone-select";
+import {Button} from "./ui/button";
 
 const temperatureProfileSchema = z.object({
   bedTime: z.string().regex(/^\d{2}:\d{2}$/, "Must be in HH:MM format"),
@@ -25,7 +25,9 @@ type TemperatureProfileForm = z.infer<typeof temperatureProfileSchema>;
 export const TemperatureProfileForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isExistingProfile, setIsExistingProfile] = useState(false);
-  const [sleepDurationError, setSleepDurationError] = useState<string | null>(null);
+  const [sleepDurationError, setSleepDurationError] = useState<string | null>(
+    null,
+  );
 
   const {
     register,
@@ -43,7 +45,7 @@ export const TemperatureProfileForm: React.FC = () => {
       initialSleepLevel: 0,
       midStageSleepLevel: 0,
       finalSleepLevel: 0,
-      timezone: { value: "America/New_York"},
+      timezone: { value: "America/New_York" },
     },
   });
 
@@ -56,8 +58,8 @@ export const TemperatureProfileForm: React.FC = () => {
     finalStageTime: "",
   });
 
-  const getUserTemperatureProfileQuery = apiR.user.getUserTemperatureProfile.useQuery();
-  
+  const getUserTemperatureProfileQuery =
+    apiR.user.getUserTemperatureProfile.useQuery();
 
   useEffect(() => {
     if (getUserTemperatureProfileQuery.isSuccess) {
@@ -71,11 +73,20 @@ export const TemperatureProfileForm: React.FC = () => {
       setIsExistingProfile(true);
       setIsLoading(false);
     } else if (getUserTemperatureProfileQuery.isError) {
-      console.error("Failed to fetch temperature profile. Using default values.", getUserTemperatureProfileQuery.error);
+      console.error(
+        "Failed to fetch temperature profile. Using default values.",
+        getUserTemperatureProfileQuery.error,
+      );
       setIsExistingProfile(false);
       setIsLoading(false);
     }
-  }, [getUserTemperatureProfileQuery.isSuccess, getUserTemperatureProfileQuery.isError, getUserTemperatureProfileQuery.data, setValue, getUserTemperatureProfileQuery.error]);
+  }, [
+    getUserTemperatureProfileQuery.isSuccess,
+    getUserTemperatureProfileQuery.isError,
+    getUserTemperatureProfileQuery.data,
+    setValue,
+    getUserTemperatureProfileQuery.error,
+  ]);
 
   useEffect(() => {
     if (bedTime && wakeupTime) {
@@ -91,13 +102,15 @@ export const TemperatureProfileForm: React.FC = () => {
       const minutes = Math.round((durationMs % (1000 * 60 * 60)) / (1000 * 60));
 
       // Check if sleep duration is less than 4 hours
-      if (hours < 4 ) {
+      if (hours < 4) {
         setSleepDurationError("Sleep duration must be at least 4 hours.");
         setSleepInfo({ duration: "", midStageTime: "", finalStageTime: "" });
       } else {
         setSleepDurationError(null);
         const midStageDate = new Date(bedDate.getTime() + 60 * 60 * 1000); // 1 hour after bedtime
-        const finalStageDate = new Date(wakeDate.getTime() - 2 * 60 * 60 * 1000); // 2 hours before wakeup
+        const finalStageDate = new Date(
+          wakeDate.getTime() - 2 * 60 * 60 * 1000,
+        ); // 2 hours before wakeup
 
         setSleepInfo({
           duration: `${hours} hours ${minutes} minutes`,
@@ -147,13 +160,17 @@ export const TemperatureProfileForm: React.FC = () => {
       timezoneTZ: data.timezone.value,
     };
 
-    console.log('Data being sent to server:', mutationData);
+    console.log("Data being sent to server:", mutationData);
 
     updateProfileMutation.mutate(mutationData);
   };
 
   const onDelete = () => {
-    if (window.confirm("Are you sure you want to delete your temperature profile?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your temperature profile?",
+      )
+    ) {
       deleteProfileMutation.mutate();
     }
   };
@@ -225,7 +242,7 @@ export const TemperatureProfileForm: React.FC = () => {
                   "America/New_York": "America/New York",
                   "America/Los_Angeles": "America/Los Angeles",
                 }}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="focus:ring-opacity-50 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200"
               />
             )}
           />
@@ -246,7 +263,7 @@ export const TemperatureProfileForm: React.FC = () => {
             {...register("bedTime")}
             type="time"
             id="bedTime"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            className="focus:ring-opacity-50 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200"
           />
           {errors.bedTime && (
             <p className="mt-1 text-sm text-red-600">
@@ -265,7 +282,7 @@ export const TemperatureProfileForm: React.FC = () => {
             {...register("wakeupTime")}
             type="time"
             id="wakeupTime"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            className="focus:ring-opacity-50 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200"
           />
           {errors.wakeupTime && (
             <p className="mt-1 text-sm text-red-600">
@@ -308,19 +325,23 @@ export const TemperatureProfileForm: React.FC = () => {
         <div className="flex justify-between">
           <Button
             type="submit"
-            className="flex-grow rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="flex-grow rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
             disabled={updateProfileMutation.isPending || !!sleepDurationError}
           >
-            {updateProfileMutation.isPending ? "Updating..." : (isExistingProfile ? "Update" : "Create") + " Profile"}
+            {updateProfileMutation.isPending
+              ? "Updating..."
+              : (isExistingProfile ? "Update" : "Create") + " Profile"}
           </Button>
           {isExistingProfile && (
             <Button
               type="button"
               onClick={onDelete}
-              className="ml-4 rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              className="ml-4 rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
               disabled={deleteProfileMutation.isPending}
             >
-              {deleteProfileMutation.isPending ? "Deleting..." : "Delete Schedule"}
+              {deleteProfileMutation.isPending
+                ? "Deleting..."
+                : "Delete Schedule"}
             </Button>
           )}
         </div>

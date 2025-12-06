@@ -1,36 +1,30 @@
 // user.ts
-import { z } from "zod";
+import {z} from "zod";
 import {
-  type Token,
-  type TrendData,
-  type IntervalData,
-  type RoutineData,
-  type BedStateType,
-  type Side,
-  type AwayModeAction,
-  type DegreeUnit,
-  TrendDataSchema,
-  TemperatureDataSchema,
-  IntervalsDataSchema,
-  RoutinesDataSchema,
-  UserProfileSchema,
-  type UserProfile,
-  type HeatingStatus,
+    type AwayModeAction,
+    type BedStateType,
+    type DegreeUnit,
+    type HeatingStatus,
+    type IntervalData,
+    IntervalsDataSchema,
+    type RoutineData,
+    RoutinesDataSchema,
+    type Side,
+    TemperatureDataSchema,
+    type Token,
+    type TrendData,
+    TrendDataSchema,
+    type UserProfile,
+    UserProfileSchema,
 } from "./types";
-import {
-  CLIENT_API_URL,
-  APP_API_URL,
-  RAW_TO_CELSIUS_MAP,
-  RAW_TO_FAHRENHEIT_MAP,
-} from "./constants";
-import { fetchWithAuth, getDeviceData } from "./eight";
+import {APP_API_URL, CLIENT_API_URL, RAW_TO_CELSIUS_MAP, RAW_TO_FAHRENHEIT_MAP,} from "./constants";
+import {fetchWithAuth, getDeviceData} from "./eight";
 
 export async function getUserProfile(token: Token): Promise<UserProfile> {
   const url = `${CLIENT_API_URL}/users/me`;
   const data = await fetchWithAuth(url, token, UserProfileSchema);
   return data.user;
 }
-
 
 export async function getTrendData(
   token: Token,

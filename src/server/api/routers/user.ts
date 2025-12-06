@@ -1,17 +1,13 @@
-import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { db } from "~/server/db";
-import { users, userTemperatureProfile } from "~/server/db/schema";
-import { cookies } from "next/headers";
-import {
-  authenticate,
-  obtainFreshAccessToken,
-  AuthError,
-} from "~/server/eight/auth";
-import { eq } from "drizzle-orm";
-import { type Token } from "~/server/eight/types";
-import { TRPCError } from "@trpc/server";
-import { adjustTemperature } from "~/app/api/temperatureCron/route";
+import {z} from "zod";
+import {createTRPCRouter, publicProcedure} from "~/server/api/trpc";
+import {db} from "~/server/db";
+import {users, userTemperatureProfile} from "~/server/db/schema";
+import {cookies} from "next/headers";
+import {authenticate, AuthError, obtainFreshAccessToken,} from "~/server/eight/auth";
+import {eq} from "drizzle-orm";
+import {type Token} from "~/server/eight/types";
+import {TRPCError} from "@trpc/server";
+import {adjustTemperature} from "~/app/api/temperatureCron/route";
 import jwt from "jsonwebtoken";
 
 class DatabaseError extends Error {
@@ -124,7 +120,9 @@ export const userRouter = createTRPCRouter({
       try {
         const authResult = await authenticateUser(input.email, input.password);
 
-        const approvedEmails = process.env.APPROVED_EMAILS!.split(",").map(email => email.toLowerCase());
+        const approvedEmails = process.env
+          .APPROVED_EMAILS!.split(",")
+          .map((email) => email.toLowerCase());
 
         if (!approvedEmails.includes(input.email.toLowerCase())) {
           throw new AuthError("Email not approved");

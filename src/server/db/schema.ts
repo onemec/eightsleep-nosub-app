@@ -1,12 +1,5 @@
-import { relations } from "drizzle-orm";
-import {
-  integer,
-  pgTableCreator,
-  text,
-  time,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core";
+import {relations} from "drizzle-orm";
+import {integer, pgTableCreator, text, time, timestamp, varchar,} from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator((name) => `8slp_${name}`); // also in drizzle.config.ts
 
@@ -21,7 +14,9 @@ export const users = createTable("users", {
 });
 
 export const userTemperatureProfile = createTable("userTemperatureProfiles", {
-  email: varchar('email', { length: 255 }).references(() => users.email).primaryKey(),
+  email: varchar("email", { length: 255 })
+    .references(() => users.email)
+    .primaryKey(),
   bedTime: time("bedTime").notNull(),
   wakeupTime: time("wakeupTime").notNull(),
   initialSleepLevel: integer("initialSleepLevel").notNull(),
@@ -39,9 +34,12 @@ export const usersRelations = relations(users, ({ one }) => ({
   }),
 }));
 
-export const userTemperatureProfileRelations = relations(userTemperatureProfile, ({ one }) => ({
-  user: one(users, {
-    fields: [userTemperatureProfile.email],
-    references: [users.email],
+export const userTemperatureProfileRelations = relations(
+  userTemperatureProfile,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [userTemperatureProfile.email],
+      references: [users.email],
+    }),
   }),
-}));
+);
